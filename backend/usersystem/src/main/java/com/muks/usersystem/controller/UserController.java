@@ -8,7 +8,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users") //this controller handles users
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {
+        "http://localhost:5173",
+        "https://user-management-system-coral.vercel.app"
+})
 
 public class UserController {
 
