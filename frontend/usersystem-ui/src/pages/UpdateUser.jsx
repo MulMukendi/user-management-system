@@ -30,7 +30,7 @@ export default function UpdateUser() {
 
     useEffect(() => {
 
-      const userNotFound = false;
+      let userNotFound = false;
 
             userApi.getUser(id)
                 .then((response) => {
