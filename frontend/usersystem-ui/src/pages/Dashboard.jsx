@@ -3,7 +3,7 @@ import * as userApi from "../api/userApi";
 import { Link } from "react-router-dom";
 import AddUserButton from "../components/addUserButton.jsx";
 import { useNavigate } from "react-router-dom";
-import updateUser from "./updateUser.jsx";
+import updateUser from "./UpdateUser.jsx";
 
 
 
