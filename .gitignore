@@ -7,4 +7,4 @@ target/
 
 # Environment files
 .env
-.env.*
+frontend/usersystem-ui/.env

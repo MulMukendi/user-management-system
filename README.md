@@ -1,6 +1,6 @@
 # User Management System
 
-A full-stack User Management System built to demonstrate modern backend development using **Spring Boot**, **React**, **MySQL**, and **Redis**. The application allows users to be created, searched, updated, and deleted while showcasing production-ready features such as RESTful APIs, server-side caching, and responsive user interfaces.
+A full-stack User Management System built to demonstrate modern backend development using **Spring Boot**, **React**, **MySQL**, **Redis**, and **Docker**. The application allows users to be created, searched, updated, and deleted while showcasing production-ready backend concepts such as RESTful APIs, server-side caching, containerization, and environment-based configuration.
 
 ---
 
@@ -21,6 +21,7 @@ A full-stack User Management System built to demonstrate modern backend developm
 - Redis caching for improved performance
 - Global exception handling
 - Duplicate email and username validation
+- Dockerized frontend, backend, MySQL, and Redis
 
 ---
 
@@ -46,6 +47,7 @@ A full-stack User Management System built to demonstrate modern backend developm
 ### Development Tools
 
 - Docker
+- Docker Compose
 - Git
 - GitHub
 - IntelliJ IDEA
@@ -86,97 +88,169 @@ Caches are automatically invalidated whenever a user is created, updated, or del
 
 ---
 
-## Prerequisites
+# Prerequisites
 
-Before running the project, ensure you have the following installed:
+Before running the project, install:
 
-- Java 17
-- Maven
-- Node.js
-- MySQL
 - Docker Desktop
 - Git
 
 ---
 
-## Getting Started
+# Getting Started
 
-### 1. Clone the repository
+## 1. Clone the repository
 
 ```bash
 git clone <repository-url>
 cd "User Management System"
 ```
 
-### 2. Start Redis
+---
 
-Make sure Docker Desktop is running, then start the Redis container:
+## 2. Configure Docker
 
-```bash
-docker compose up -d
-```
-
-### 3. Configure the application
-
-The repository includes an example configuration file:
+In the project root, rename:
 
 ```text
-application-example.properties
+.env.example
 ```
 
-Create a new file named:
+to
 
 ```text
-application-local.properties
+.env
 ```
 
-Copy the contents of `application-example.properties` into `application-local.properties`, then replace the placeholder values with your own MySQL credentials.
+Open the `.env` file and change the MySQL password:
 
-### 4. Run the backend
-
-```bash
-./mvnw spring-boot:run
+```properties
+MYSQL_PASSWORD=your_password
 ```
 
-or run the application directly from IntelliJ IDEA.
+The remaining values should remain as follows:
 
-### 5. Run the frontend
+```properties
+MYSQL_HOST=mysql
+MYSQL_PORT=3306
+MYSQL_DATABASE=usersystem
+MYSQL_USERNAME=root
+
+REDIS_HOST=redis
+REDIS_PORT=6379
+```
+
+---
+
+## 3. Configure the Frontend
+
+Navigate to:
+
+```text
+frontend/usersystem-ui
+```
+
+Rename:
+
+```text
+.env.example
+```
+
+to
+
+```text
+.env
+```
+
+The default value is:
+
+```properties
+VITE_API_URL=http://localhost:8080
+```
+
+This is the URL the React application uses to communicate with the backend.
+
+---
+
+## 4. Start the Application
+
+Make sure Docker Desktop is running.
+
+Then execute:
 
 ```bash
-npm install
-npm run dev
+docker compose up --build -d
+```
+
+Docker Compose will automatically:
+
+- Build the React frontend
+- Build the Spring Boot backend
+- Create the MySQL database
+- Create the Redis server
+- Connect all services together
+
+---
+
+## 5. Access the Application
+
+Frontend:
+
+```text
+http://localhost:5173
+```
+
+Backend:
+
+```text
+http://localhost:8080/users
 ```
 
 ---
 
 ## Configuration
 
-Configure the following properties in `application-local.properties`:
+### Root `.env`
 
-- MySQL database URL
-- MySQL username
-- MySQL password
-- Redis host (if different from localhost)
-- Redis port (if different from 6379)
+The root `.env` file contains the environment variables required by Docker Compose.
 
-Local configuration files are excluded from version control using `.gitignore` to keep sensitive information secure.
+These variables are supplied to the backend and database containers when they start.
+
+### Frontend `.env`
+
+The frontend has its own `.env` file containing:
+
+```properties
+VITE_API_URL=http://localhost:8080
+```
+
+This allows the frontend to communicate with the backend without hardcoding the API URL.
+
+### application-docker.properties
+
+The backend uses `application-docker.properties` whenever the Docker profile is active.
+
+Spring Boot automatically reads the environment variables provided by Docker Compose and uses them to configure:
+
+- MySQL
+- Redis
 
 ---
 
 ## API Endpoints
 
-| Method | Endpoint                   | Description                       |
-| ------ | -------------------------- | --------------------------------- |
-| GET    | `/users`                   | Get all users                     |
-| GET    | `/users/{id}`              | Get user by ID                    |
-| GET    | `/users/search?firstName=` | Search users by first name        |
-| POST   | `/users`                   | Create a new user                 |
-| PUT    | `/users/{id}`              | Update an existing user           |
-| DELETE | `/users/{id}`              | Delete a user                     |
-| GET    | `/users/count`             | Get total number of users         |
-| GET    | `/users/recent`            | Get recently added users          |
-| GET    | `/users/average-age`       | Get average user age              |
-| GET    | `/users/created-today`     | Get number of users created today |
+| Method | Endpoint                             | Description                |
+| ------ | ------------------------------------ | -------------------------- |
+| GET    | `/users`                             | Get all users              |
+| GET    | `/users/{id}`                        | Get user by ID             |
+| GET    | `/users/search?firstName=`           | Search users by first name |
+| POST   | `/users`                             | Create a user              |
+| PUT    | `/users/{id}`                        | Update a user              |
+| DELETE | `/users/{id}`                        | Delete a user              |
+| GET    | `/users/dashboard/stats/count`       | Total users                |
+| GET    | `/users/recent`                      | Three most recent users    |
+| GET    | `/users/dashboard/stats/average-age` | Average user age           |
+| GET    | `/users/dashboard/stats/new-today`   | Users created today        |
 
 ---
 
@@ -187,7 +261,6 @@ Local configuration files are excluded from version control using `.gitignore` t
 - Pagination and sorting
 - Advanced filtering
 - Redis cache expiration (TTL)
-- Dockerized frontend and backend
 - Unit and integration testing
 - API documentation with Swagger/OpenAPI
 - CI/CD pipeline
@@ -202,13 +275,13 @@ This project was built to gain hands-on experience with:
 - Spring Boot
 - REST API development
 - Spring Data JPA
-- Spring Cache
-- Redis
-- Docker
+- Redis caching
+- Docker & Docker Compose
+- Environment variables
 - MySQL
 - React
-- Git and GitHub
 - Full-stack application architecture
+- Git & GitHub
 
 ---
 
